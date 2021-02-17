@@ -1,10 +1,10 @@
 """
 To do:
 
-make function to get the html request
 make web crawler class
 make multi threading
 make logging
+make crawlers for each scraped anchor tag
 """
 
 __author__ = "Liam Major"
