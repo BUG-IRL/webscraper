@@ -65,13 +65,14 @@ def sanitize_anchors(l, response: u.http.client.HTTPResponse):
     """
     This function scrapes the attributes from an HTML element
     
+    '/new' --> 'https://youtube.com/new'
     Parameters:
         l (List of dicts): Takes an array of output from scrape_attrs
 
     Returns:
         A list of dicts [{}, {}, {}]
     """
-    
+
     r = []
 
     for i in l:
