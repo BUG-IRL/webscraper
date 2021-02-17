@@ -10,13 +10,15 @@ make logging
 __author__ = "Liam Major"
 __version__ = "0.1"
 
-# verbose = True:
-# def pv(text: str): # pv = print verbose
-#     if verbose:
-#         print(text)
-
 from src import db, logger, crawler
 from src.consts import *
+import urllib.request
 
-print(crawler.scrape_attrs('<a href="https://stackoverflow.blog" class="fr">company blog</a>'))
-print(crawler.scrape_attrs('<a href="https://stackoverflow.com/help" class="js-gps-track" data-gps-track="site_switcher.click({ item_type:14 })">help</a>'))
+href = "https://youtube.com"
+
+with urllib.request.urlopen(href) as response:
+
+    scraped = crawler.get_all_anchors(response)
+
+    for index, i in enumerate(scraped):
+        print(index, i)
