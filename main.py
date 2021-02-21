@@ -25,7 +25,7 @@ from src import db, logger, crawler
 #         print(index, i)
 
 l = logger.Logger(outputFile="h")
-d = db.Database(dbName=True)
+d = db.Database(dbName="h")
 
 hasBoth = crawler.Crawler(logger=l, db=d)
 print("%s isLogging func %s" %("hasBoth", str(hasBoth.isLogging()))) # True

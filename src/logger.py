@@ -21,4 +21,4 @@ class Logger:
         print(string)
 
     def isLogging(self):
-        return isinstance(self._fout, str) and not self._fout
+        return isinstance(self._fout, str) and self._fout != False
