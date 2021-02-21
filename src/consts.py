@@ -5,7 +5,7 @@ This module will contain all the constant variables and functions which will be 
 '''
 
 # Constants #
-class constants:
+class Constants:
     # This enables the logging to the screen
     verbose = True
 
