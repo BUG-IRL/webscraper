@@ -13,9 +13,43 @@ from .consts import pv
 import re
 import urllib.request as u
 
+from .logger import Logger 
+from .db import Database
+
 # consts from here
 
 anchor_pattern = r"<a.+<\/a>"
+
+# making the crawler OO class
+# comment this later teehee
+
+class Crawler:
+    def __init__(self, logger: Logger or bool = False, db: Database or bool = False):
+        self._logger = logger
+        self._db = db
+
+        # Going to have a logger object and a database object passed into the constructor
+        
+        # basically, you have to tell it where to log and where to store information
+
+        print("Made crawler")
+
+    def isLogging(self):
+        if self.hasLogger():
+            return self._logger.isLogging()
+        else:
+            return False
+
+    def hasLogger(self):
+        return isinstance(self._logger, Logger)
+
+    def hasDatabase(self):
+        return isinstance(self._db, Database)
+
+    def _log(self, string: str):
+        if self.hasLogger():
+            print("called Crawler.log with a logger")
+            self._logger.logToFile(string)
 
 # defining functions
 
