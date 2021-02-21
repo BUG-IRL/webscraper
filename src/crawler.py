@@ -46,7 +46,7 @@ class Crawler:
     def hasDatabase(self):
         return isinstance(self._db, Database)
 
-    def _log(self, string: str):
+    def log(self, string: str):
         if self.hasLogger():
             print("called Crawler.log with a logger")
             self._logger.logToFile(string)
