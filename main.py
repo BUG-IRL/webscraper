@@ -1,17 +1,18 @@
 """
 To do:
 
-make web crawler class
-make multi threading
-make logging
-make crawlers for each scraped anchor tag
+Current:
+1. complete logging functions
+2. complete database functions
+
+Future:
+3. introduce multithreading options
 """
 
 __author__ = "Liam Major"
 __version__ = "0.1"
 
 from src import db, logger, crawler
-# from src.consts import *
 # import urllib.request
 
 # href = "https://youtube.com"
