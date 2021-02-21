@@ -16,11 +16,7 @@ import urllib.request as u
 
 from .logger import Logger 
 from .db import Database
-from .consts import pv
-
-# consts from here
-
-anchor_pattern = r"<a.+<\/a>"
+from .consts import pv, Constants
 
 # making the crawler OO class
 # comment this later teehee
@@ -90,7 +86,7 @@ def scrapeAttrs(a):
 
     return r
 
-def scrapeAnchors(string: str, pattern: str = anchor_pattern):
+def scrapeAnchors(s: str, p: str = Constants.anchorPattern):
     """
     A generator function which yields an anchor tag
     
@@ -101,7 +97,7 @@ def scrapeAnchors(string: str, pattern: str = anchor_pattern):
         Yields a string object
     """
 
-    for i in re.findall(pattern, string):
+    for i in re.findall(p, s):
         for j in i.split("<a"):
             if not j: 
                 continue
