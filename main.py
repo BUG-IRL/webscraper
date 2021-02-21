@@ -10,7 +10,7 @@ Future:
 """
 
 __author__ = "Liam Major"
-__version__ = "0.1"
+__version__ = "0.6"
 
 from src import db, logger, crawler
 # import urllib.request
