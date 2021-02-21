@@ -10,6 +10,7 @@ class Constants:
 
     # This enables the logging to the screen
     verbose = True
+    anchorPattern = r"<a.+<\/a>"
 
 # Functions #
 def pv(s: str): # pv ---> print verbose
