@@ -10,27 +10,17 @@ Future:
 """
 
 __author__ = "Liam Major"
-__version__ = "0.6"
+__version__ = "0.7"
 
 from src import db, logger, crawler
-# import urllib.request
 
-# href = "https://youtube.com"
-
-# with urllib.request.urlopen(href) as response:
-
-#     scraped = crawler.getAllAnchors(response)
-
-#     for index, i in enumerate(scraped):
-#         print(index, i)
+href = "https://youtube.com"
 
 l = logger.Logger(outputFile="h")
 d = db.Database(dbName="h")
 
-hasBoth = crawler.Crawler(logger=l, db=d)
-print("%s isLogging func %s" %("hasBoth", str(hasBoth.isLogging()))) # True
-print("%s hasLogger func %s" %("hasBoth", str(hasBoth.hasLogger()))) # True
-print("%s hasDatabase func %s" %("hasBoth", str(hasBoth.hasDatabase()))) # True
-print()
+hasBoth = crawler.Crawler(logger=l, db=d, uri=href)
+result = hasBoth.run()
 
-hasBoth.log("logged something lmao")
+for index, i in enumerate(result):
+    print(index, i)
