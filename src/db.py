@@ -15,6 +15,10 @@ class Database:
         if not isinstance(self._ref, str) or self._ref == True:
             paramError('dbName', ['str', 'False'], type(self._ref))
 
+    @property
+    def Name(self):
+        return str(self._ref)
+
     def isDatabase(self):
         # returns a true or false there is a database reference passed
         return (self._ref != False)

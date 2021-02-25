@@ -15,6 +15,10 @@ class Logger:
         # Verifying params
         if not isinstance(self._fout, str) and self._fout != False:
             paramError("outputFile", ['str', 'False'], type(self._fout))
+
+    @property
+    def fileOutput(self):
+        return str(self._fout)
         
     def logToFile(self, string: str):
         # in the future it'll just self._fout.write(string)
@@ -22,3 +26,6 @@ class Logger:
 
     def isLogging(self):
         return isinstance(self._fout, str) and self._fout != False
+
+    def __str__(self):
+        return "Logger Obj with output file %s" % str(self._fout)
