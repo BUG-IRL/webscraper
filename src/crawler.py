@@ -11,6 +11,7 @@ This module will handle opening links and retriving the anchor tags from it.
 
 import re
 import urllib.request as u
+import uuid
 
 # local imports
 
@@ -22,17 +23,43 @@ from .consts import pv, Constants
 # comment this later teehee
 
 class Crawler:
-    def __init__(self, logger: Logger or bool = False, db: Database or bool = False):
+    def __init__(self, 
+        logger: Logger or bool = False, 
+        db: Database or bool = False,
+        tries: int = 5,
+        nameGenerator = uuid.uuid4,
+        uri: str = ""
+        ):
+
         self._logger = logger
         self._db = db
+        self._n = str(nameGenerator())[:8]
+        self._uri = uri
 
         # Going to have a logger object and a database object passed into the constructor
         
         # basically, you have to tell it where to log and where to store information
 
-        print("Made crawler")
+        print(f"Made crawler {self._n}")
+
+    def run(self):
+        """
+        This function makes an HTTP request to the inputted website via 'uri' and returns
+        the scraped anchor tags with their completed URI
+
+        Returns:
+            A list of dicts [{}, {}, {}]
+        """
+        with u.urlopen(self._uri) as r: 
+                return getAllAnchors(r)
 
     def isLogging(self):
+        """
+        Returns a boolean value if there is a Logger and if the Logger is logging
+
+        Returns:
+            boolean
+        """
         if self.hasLogger(): return self._logger.isLogging()
         else: return False
 
@@ -54,6 +81,26 @@ class Crawler:
         """
         return isinstance(self._db, Database)
 
+    @property
+    def URI(self):
+        return self._uri
+
+    @property
+    def Name(self):
+        return self._n
+
+    @property
+    def Database(self):
+        return self._db
+
+    @property
+    def Logger(self):
+        return self._logger
+
+    @property
+    def Tries(self):
+        return self._t
+
     def log(self, string: str):
         if self.hasLogger():
             self._logger.logToFile(string)
@@ -61,7 +108,27 @@ class Crawler:
         else:
             return False
 
+    def __str__(self):
+        logStr = ("not logging", "logging with output file '%s'" % self._logger.fileOutput)[self.hasLogger()]
+        dbStr = ("doesn't have a Database object", "has a Database object with name '%s'" % self._db.Name)[self.hasDatabase()]
+
+        return f"{self._n} is {logStr} and {self._n} {dbStr}"
+
 # defining functions
+
+def printCrawler(c: Crawler) -> bool:
+    """
+    This function takes a Crawler object and prints it, same as doing print(CrawlerObject)
+
+    Parameters:
+        c (Crawler): The Crawler object to print
+    """
+    logStr = ("not logging", "logging with output file '%s'" % c.Logger.fileOutput)[c.hasLogger()]
+    dbStr = ("doesn't have a Database object", "has a Database object with name '%s'" % c.Database.Name)[c.hasDatabase()]
+
+    print(f"{c.Name} is {logStr} and {c.Name} {dbStr}")
+
+    return True
 
 def scrapeAttrs(a):
     """
@@ -81,8 +148,16 @@ def scrapeAttrs(a):
 
         # finding the first occurance of =" and splitting based on that index
         # then unpacking the results from split and mapping it
-        k, v = kv.split('="')
-        r[k] = v
+        try:
+            k, v = kv.split('="')
+            if k and v:
+                r[k] = v
+        except ValueError as ve:
+            # tried to splice a bad tag/string
+            # therefore not a real tag
+            pv("Caught bad tag during scrapeAttrs '%s'" % kv)
+        except Exception as e:
+            pv("Caught handled exception in scrapeAttrs: %s" % str(e))
 
     return r
 
@@ -103,7 +178,7 @@ def scrapeAnchors(s: str, p: str = Constants.anchorPattern):
                 continue
             yield ("<a" + j)
 
-def sanitizeAnchors(l, response: u.http.client.HTTPResponse):
+def sanitizeAnchors(l, response: u.http.client.HTTPResponse, tags=Constants.tags):
     """
     This function scrapes the attributes from an HTML element
     
@@ -118,6 +193,8 @@ def sanitizeAnchors(l, response: u.http.client.HTTPResponse):
     r = []
 
     for i in l:
+        if i["tag"] != "a":
+            continue
         value = i['href']
         if value[0] == '/':
             if len(value) == 1:
@@ -127,8 +204,12 @@ def sanitizeAnchors(l, response: u.http.client.HTTPResponse):
                 # need to filter it out
 
                 i['href'] = response.url + i['href'][1:]
+
+        # removing all attrs but tag and href using a list comprehension
+        i = {k:v for k, v in i.items() if k in tags}
         
-        r.append(i)
+        # ensuring no duplicates
+        if not i in r: r.append(i)
 
     return r
 
